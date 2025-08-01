@@ -6,7 +6,8 @@ use {
 test_case!(generate_uuid, {
     let g = get_tester!();
 
-    let test_cases = [(
+    g.named_test(
+        "GENERATE_UUID should throw translate error when given argument",
         "SELECT generate_uuid(0) as uuid",
         Err(TranslateError::FunctionArgsLengthNotMatching {
             name: "GENERATE_UUID".to_owned(),
@@ -14,11 +15,8 @@ test_case!(generate_uuid, {
             found: 1,
         }
         .into()),
-    )];
-
-    for (sql, expected) in test_cases {
-        g.test(sql, expected).await;
-    }
+    )
+    .await;
 
     g.count("SELECT GENERATE_UUID()", 1).await;
     g.count("VALUES (GENERATE_UUID())", 1).await;

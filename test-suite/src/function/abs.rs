@@ -19,7 +19,8 @@ test_case!(abs, {
             I64    | I64    | I64;
             1        1        1
         )),
-    ).await;
+    )
+    .await;
 
     g.named_test(
         "ABS should convert float to absolute value",
@@ -31,7 +32,8 @@ test_case!(abs, {
             F64    | F64    | F64;
             1.5      1.5      1.5
         )),
-    ).await;
+    )
+    .await;
 
     g.named_test(
         "ABS should handle zero values correctly",
@@ -43,55 +45,58 @@ test_case!(abs, {
             I64    | I64    | I64;
             0        0        0
         )),
-    ).await;
+    )
+    .await;
 
-    g.run( 
-        "CREATE TABLE SingleItem (id integer, int8 int8, dec decimal)",
-    ).await;
+    g.run("CREATE TABLE SingleItem (id integer, int8 int8, dec decimal)")
+        .await;
 
-    g.run(
-        r#"INSERT INTO SingleItem VALUES (0, -1, -2)"#,
-    ).await;
+    g.run(r#"INSERT INTO SingleItem VALUES (0, -1, -2)"#).await;
 
     g.named_test(
-        "ABS should convert integer, int8, and decimal to absolute value", 
+        "ABS should convert integer, int8, and decimal to absolute value",
         "SELECT ABS(id) AS ABS1, 
                 ABS(int8) AS ABS2, 
                 ABS(dec) AS ABS3 
-        FROM SingleItem", 
+        FROM SingleItem",
         Ok(select!(
             "ABS1"  | "ABS2" | "ABS3";
             I64     | I8     |  Decimal;
             0         1         2.into()
         )),
-    ).await;
+    )
+    .await;
 
     g.named_test(
-        "ABS should throw evaluate error when given a string", 
+        "ABS should throw evaluate error when given a string",
         "SELECT ABS('string') AS ABS FROM SingleItem",
         Err(EvaluateError::FunctionRequiresFloatValue(String::from("ABS")).into()),
-    ).await;
+    )
+    .await;
 
     g.named_test(
-        "ABS should return NULL if it gets NULL", 
-        "SELECT ABS(NULL) AS ABS;", 
-        Ok(select_with_null!(ABS; Null))
-    ).await;
+        "ABS should return NULL if it gets NULL",
+        "SELECT ABS(NULL) AS ABS;",
+        Ok(select_with_null!(ABS; Null)),
+    )
+    .await;
 
     g.named_test(
-        "ABS should throw evaluate error when given boolean TRUE", 
+        "ABS should throw evaluate error when given boolean TRUE",
         "SELECT ABS(TRUE) AS ABS FROM SingleItem",
         Err(EvaluateError::FunctionRequiresFloatValue(String::from("ABS")).into()),
-    ).await;
+    )
+    .await;
 
     g.named_test(
-        "ABS should throw evaluate error when given boolean FALSE", 
+        "ABS should throw evaluate error when given boolean FALSE",
         "SELECT ABS(FALSE) AS ABS FROM SingleItem",
         Err(EvaluateError::FunctionRequiresFloatValue(String::from("ABS")).into()),
-    ).await;
+    )
+    .await;
 
     g.named_test(
-        "ABS should throw translate error when given more than one argument", 
+        "ABS should throw translate error when given more than one argument",
         "SELECT ABS('string', 'string2') AS ABS",
         Err(TranslateError::FunctionArgsLengthNotMatching {
             name: "ABS".to_owned(),
@@ -99,5 +104,6 @@ test_case!(abs, {
             found: 2,
         }
         .into()),
-    ).await;
+    )
+    .await;
 });
