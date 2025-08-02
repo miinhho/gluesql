@@ -9,7 +9,7 @@ version = "0.1.0"
 crate-type = ["cdylib"]
 
 [dependencies]
-napi = { version = "3.0.0", features = ["napi8", "serde-json"] }
+napi = { version = "3.0.0", features = ["napi8", "serde-json", "tokio_rt", "tokio"] }
 napi-derive = "3.0.0"
 gluesql-core.workspace = true
 gluesql_memory_storage.workspace = true
@@ -25,6 +25,7 @@ serde_json = "1"
 # all the `std::fmt` and `std::panicking` infrastructure, so isn't great for
 # code size when deploying.
 console_error_panic_hook = { version = "0.1.6", optional = true }
+tokio = { version = "1.47.1", features = ["rt"] }
 
 [build-dependencies]
 napi-build = "2"

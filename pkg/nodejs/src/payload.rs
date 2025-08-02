@@ -6,10 +6,10 @@ use {
 };
 
 #[napi(object)]
-struct GlueSQLPayload {
+pub struct GlueSQLPayload {
   pub types: String,
-  pub affected: Option<usize>,
-  pub rows: Option<Json::Array>,
+  pub affected: Option<u32>,
+  pub rows: Option<Json>,
   pub version: Option<String>,
   pub tables: Option<Vec<String>>,
   pub functions: Option<Vec<String>>,
@@ -19,7 +19,7 @@ pub fn convert(env: Env, payloads: Vec<Payload>) -> GlueSQLPayload {
   let payloads = payloads.into_iter().map(convert_payload).collect();
   let payloads = Json::Array(payloads);
 
-  env.to_js_value(payloads)
+  env.to_js_value(&payloads)
 }
 
 fn convert_payload(payload: Payload) -> Json {
